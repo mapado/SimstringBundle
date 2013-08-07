@@ -38,7 +38,14 @@ class Vector implements \Iterator, \Countable
      */
     public function current ()
     {
-        return $this->vector->get($this->position);
+        $value = $this->vector->get($this->position);
+        if (substr($value, 0, 1) === '"') {
+            $value = substr($value, 1);
+        }
+        if (substr($value, -1) === '"') {
+            $value = substr($value, 0, -1);
+        }
+        return $value;
     }
 
     /**
