@@ -1,0 +1,23 @@
+{
+    "name": "mapado/simstring-bundle",
+    "type": "symfony-bundle",
+    "description": "Mapado Simstring Bundle: Record search",
+    "keywords": ["mapado", "simstring", "record search", "symfony"],
+    "license": "MIT",
+    "autoload": {
+        "psr-0": { "Mapado\\SimstringBundle": "src/" },
+        "classmap": ["src/Mapado/SimstringBundle/Simstring/simstring.php"]
+    },
+
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "require-dev": {
+        "raulfraile/ladybug-bundle": "0.61",
+        "atoum/atoum": "dev-master@dev",
+    },
+    "config": {
+        "bin-dir": "bin"
+    }
+}
+
