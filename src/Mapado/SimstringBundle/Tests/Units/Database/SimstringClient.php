@@ -83,6 +83,21 @@ class SimstringClient extends atoum
 
         $this->sizeOf($resultList)
             ->isEqualTo(3);
+
+        // change threshold
+        $resultList = $client->find('villrubanne');
+        $this->object($resultList)
+            ->isInstanceOf('\Iterator');
+
+        $this->sizeOf($resultList)
+            ->isEqualTo(0);
+
+        $resultList = $client->find('villrubanne', 0.5);
+        $this->object($resultList)
+            ->isInstanceOf('\Iterator');
+
+        $this->sizeOf($resultList)
+            ->isEqualTo(1);
     }
 
     /**

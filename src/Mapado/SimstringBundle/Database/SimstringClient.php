@@ -60,10 +60,23 @@ class SimstringClient
      * @access public
      * @return void
      */
-    public function find($query)
+    public function find($query, $threshold = null)
     {
+        if ($threshold !== null) {
+            $this->reader->threshold = $threshold;
+        }
         $vector = new Simstring\Vector($this->reader->retrieve($query));
-        $this->reader->close();
         return $vector;
+    }
+
+    /**
+     * __destruct
+     *
+     * @access public
+     * @return void
+     */
+    public function __destruct()
+    {
+        $this->reader->close();
     }
 }

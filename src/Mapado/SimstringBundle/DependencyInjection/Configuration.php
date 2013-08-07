@@ -17,11 +17,42 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('mapado_simstring');
+        $rootNode = $treeBuilder->root('mapado_simstring')
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->arrayNode('databases')
+                    ->prototype('scalar')->end()
+                ->end()
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+                ->arrayNode('reader')
+                    ->prototype('array')
+                        ->children()
+                            ->scalarNode('database')->end()
+                            ->enumNode('measure')
+                                ->values(['cosine', 'dice', 'jaccard', 'overlap', 'exact'])
+                                ->defaultValue('exact')
+                            ->end()
+                            ->floatNode('threshold')
+                                ->min(0)->max(1)
+                                ->defaultValue(1)
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+
+                ->arrayNode('writer')
+                    ->prototype('array')
+                        ->children()
+                            ->scalarNode('database')->end()
+                            ->integerNode('ngram')
+                                ->min(1)
+                            ->end()
+                            ->booleanNode('be')->end()
+                            ->booleanNode('unicode')->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
 
         return $treeBuilder;
     }
