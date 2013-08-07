@@ -10,7 +10,12 @@
     },
 
     "require": {
-        "php": ">=5.3.3"
+        "php": ">=5.3.3",
+        "symfony/framework-bundle": "~2.3",
+        "symfony/dependency-injection": "~2.3",
+        "symfony/http-kernel": "~2.3",
+        "symfony/config": "~2.3",
+        "symfony/console": "~2.3"
     },
     "require-dev": {
         "raulfraile/ladybug-bundle": "0.61",
