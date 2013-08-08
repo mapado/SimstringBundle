@@ -4,7 +4,7 @@ namespace Mapado\SimstringBundle\Database;
 
 use Mapado\SimstringBundle\Simstring;
 
-class SimstringClient
+class SimstringClient implements ClientInterface
 {
     /**
      * reader

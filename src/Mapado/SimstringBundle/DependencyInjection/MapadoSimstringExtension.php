@@ -2,10 +2,11 @@
 
 namespace Mapado\SimstringBundle\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
  * This is the class that loads and manages your bundle configuration
@@ -22,6 +23,7 @@ class MapadoSimstringExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        $this->loadDatabase($config, $container);
         $this->loadReader($config, $container);
         $this->loadWriter($config, $container);
 
@@ -42,16 +44,32 @@ class MapadoSimstringExtension extends Extension
         if (!empty($config['reader'])) {
             foreach ($config['reader'] as $readerKey => $reader) {
                 // get database name
-                $database = $this->getDatabase($config, $reader['database']);
+                $databaseName = $reader['database'];
+                $database = $this->getDatabase($config, $databaseName);
 
                 // initialize the service
                 unset($reader['database']);
+                $serviceId = sprintf('mapado.simstring.%s_reader', $readerKey);
+                $clientServiceId = sprintf('mapado.simstring.%s_readerclient', $readerKey);
                 $container->register(
-                    'mapado.simstring.' . $readerKey . '_reader',
+                    $clientServiceId,
                     'Mapado\SimstringBundle\Database\SimstringClient'
                 )
                 ->addArgument($database)
                 ->addArgument($reader);
+
+                $transformerId = sprintf('mapado.simstring.model_transformer.%s', $databaseName);
+                if (!$container->has($transformerId)) {
+                    $container->setAlias($serviceId, $clientServiceId);
+                } else {
+                    //$container->setAlias($serviceId, $clientServiceId);
+                    $container->register(
+                        $serviceId,
+                        'Mapado\SimstringBundle\Database\SimstringTransformerClient'
+                    )
+                    ->addArgument(new Reference($clientServiceId))
+                    ->addArgument(new Reference(sprintf('mapado.simstring.model_transformer.%s', $databaseName)));
+                }
             }
         }
     }
@@ -84,6 +102,22 @@ class MapadoSimstringExtension extends Extension
     }
 
     /**
+     * loadDatabase
+     *
+     * @param array $config
+     * @access private
+     * @return void
+     */
+    private function loadDatabase(array $config, ContainerBuilder $container)
+    {
+        foreach ($config['databases'] as $key => $database) {
+            if (!empty($database['persistence'])) {
+                $this->loadPersistence($key, $database['persistence'], $container);
+            }
+        }
+    }
+
+    /**
      * getDatabase
      *
      * @param array $config
@@ -93,10 +127,45 @@ class MapadoSimstringExtension extends Extension
      */
     private function getDatabase(array $config, $databaseName)
     {
-        if (!isset($config['databases'][$databaseName])) {
+        if (!isset($config['databases'][$databaseName]['path'])) {
             $msg = sprintf('The simstring database with name "%s" is not defined', $databaseName);
             throw new \InvalidArgumentException($msg);
         }
-        return $config['databases'][$databaseName];
+
+        return $config['databases'][$databaseName]['path'];
+    }
+
+    /**
+     * loadPersistence
+     *
+     * @param array $config
+     * @access private
+     * @return void
+     */
+    private function loadPersistence($database, $persistence, ContainerBuilder $container)
+    {
+        $driver = $persistence['driver'];
+
+        $serviceId = sprintf('mapado.simstring.model_transformer.%s', $database);
+
+        switch ($driver) {
+            case 'orm':
+                $className = 'Orm';
+                $persistenceService = new Reference('doctrine');
+                break;
+            default:
+                $msg = sprintf('The %s driver is not yet supported', $driver);
+                throw new \InvalidArgumentException($msg);
+                break;
+        }
+
+        $container->register(
+            $serviceId,
+            'Mapado\SimstringBundle\DataTransformer\\' . $className
+        )
+        ->addArgument($persistenceService)
+        ->addArgument($persistence['model'])
+        ->addArgument($persistence['field'])
+        ->addArgument($persistence['options']);
     }
 }

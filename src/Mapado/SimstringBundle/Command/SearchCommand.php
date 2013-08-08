@@ -53,7 +53,11 @@ class SearchCommand extends ContainerAwareCommand
         }
 
         foreach ($resultVector as $line) {
-            $output->writeln($line);
+            if (is_scalar($line)) {
+                $output->writeln($line);
+            } else {
+                $output->writeln(get_class($line) . ' [' . $line->getId() . ']');
+            }
         }
     }
 }
