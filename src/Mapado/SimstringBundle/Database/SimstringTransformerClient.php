@@ -9,7 +9,7 @@ use Mapado\SimstringBundle\DataTransformer;
  * 
  * @author Julien Deniau <julien.deniau@mapado.com>
  */
-class SimstringTransformerClient
+class SimstringTransformerClient implements ClientInterface
 {
     /**
      * client
