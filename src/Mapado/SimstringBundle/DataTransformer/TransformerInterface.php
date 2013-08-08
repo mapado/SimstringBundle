@@ -24,4 +24,13 @@ interface TransformerInterface
      * @return \Iterator Object list
      */
     public function reverseTransform(\Iterator $stringList);
+
+    /**
+     * transform
+     *
+     * @param \Iterator $objectList
+     * @access public
+     * @return void
+     */
+    public function transform(\Iterator $objectList);
 }

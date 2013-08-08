@@ -58,14 +58,46 @@ class Orm implements TransformerInterface
     {
         $objectList = [];
         $manager = (isset($this->options['manager']) ? $this->options['manager'] : null);
+        $method = (isset($this->options['repository_method']) ? $this->options['repository_method'] : 'findBy');
+
+
         $em = $this->persistenceService->getManager($manager);
         $repo = $em->getRepository($this->model);
 
         foreach ($stringList as $search) {
-            $l = $repo->findBy([$this->field => $search]);
+            $l = call_user_func([$repo, $method], [$this->field => $search]);
             $objectList = array_merge($objectList, $l);
         }
 
         return $objectList;
+    }
+
+    /**
+     * transform
+     *
+     * @param \Iterator $objectList
+     * @access public
+     * @return void
+     */
+    public function transform(\Iterator $objectList)
+    {
+        $stringList = [];
+
+        foreach ($objectList as $object) {
+            $getMethod = 'get' . ucfirst($this->field);
+            $isMethod = 'is' . ucfirst($this->field);
+
+            if (method_exists($object, $getMethod)) {
+                $value = $object->{$getMethod}();
+            } elseif (method_exists($object, $isMethod)) {
+                $value = $object->{$isMethod}();
+            } else {
+                $value = $this->{$this->field};
+            }
+
+            $stringList[] = $value;
+        }
+
+        return $stringList;
     }
 }

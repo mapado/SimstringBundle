@@ -92,12 +92,43 @@ mapado_simstring:
             be: false # not required
 ```
 
+#### Link with Doctrine ORM
+SimstringBundle is (partially) compatible with Doctrine ORM (for now).
+You only add a few database settings to get objects from your database.
+
+```yaml
+# app/config/config.yml
+mapado_simstring:
+    databases:
+        city: 
+            path: "path/to/your/database/city.db"
+            persistence:
+                driver: orm # only ORM is supported for the moment
+                model: \Mapado\MyEntityBundle\Entity\City # required
+                field: simstringColumn # required
+                options: # optional
+                    manager: geolocation # if not set, the default manager will be used
+                    repository_method: findVisibleBy # findBy is used by default
+````
+
 
 
 
 ### Usage
-You can now use the functions in your controllers
+You can now use the functions in your controllers or via command line
 
+#### Command Line
+```sh
+# Perform the query
+php app/console mapado:simstring:search city cihcago
+# will output chicago
+
+# Perform an insert
+php app/console mapado:simstring:insert city chicago houson boston montréal
+# will rewrite the database with this cities
+```
+
+#### Controller
 ```php
 // Perform the query
 $textList = $this->get('mapado.simstring.city_reader')->find('New Yrok');
@@ -105,3 +136,5 @@ $textList = $this->get('mapado.simstring.city_reader')->find('New Yrok');
 // Dynamically change the threshold
 $textList = $this->get('mapado.simstring.city_reader')->find('New Yrok', 0.3);
 ```
+
+```$textList``` will be an iterator of string or of Entity if you used the ORM mapper.

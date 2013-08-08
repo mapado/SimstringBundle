@@ -22,6 +22,14 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->arrayNode('databases')
                     ->prototype('array')
+                        ->beforeNormalization()
+                            ->ifString()
+                                ->then(
+                                    function ($v) {
+                                        return ['path' => $v];
+                                    }
+                                )
+                        ->end()
                         ->children()
                             ->scalarNode('path')->end()
                             ->arrayNode('persistence')

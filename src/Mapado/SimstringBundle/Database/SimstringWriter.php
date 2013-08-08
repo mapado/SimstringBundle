@@ -3,7 +3,7 @@ namespace Mapado\SimstringBundle\Database;
 
 use Mapado\SimstringBundle\Simstring;
  
-class SimstringWriter
+class SimstringWriter implements WriterInterface
 {
     /**
      * writer

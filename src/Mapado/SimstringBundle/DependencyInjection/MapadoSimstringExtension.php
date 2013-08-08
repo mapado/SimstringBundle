@@ -26,6 +26,7 @@ class MapadoSimstringExtension extends Extension
         $this->loadDatabase($config, $container);
         $this->loadReader($config, $container);
         $this->loadWriter($config, $container);
+        $this->loadMainServices($config, $container);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
@@ -49,7 +50,6 @@ class MapadoSimstringExtension extends Extension
 
                 // initialize the service
                 unset($reader['database']);
-                $serviceId = sprintf('mapado.simstring.%s_reader', $readerKey);
                 $clientServiceId = sprintf('mapado.simstring.%s_readerclient', $readerKey);
                 $container->register(
                     $clientServiceId,
@@ -57,19 +57,6 @@ class MapadoSimstringExtension extends Extension
                 )
                 ->addArgument($database)
                 ->addArgument($reader);
-
-                $transformerId = sprintf('mapado.simstring.model_transformer.%s', $databaseName);
-                if (!$container->has($transformerId)) {
-                    $container->setAlias($serviceId, $clientServiceId);
-                } else {
-                    //$container->setAlias($serviceId, $clientServiceId);
-                    $container->register(
-                        $serviceId,
-                        'Mapado\SimstringBundle\Database\SimstringTransformerClient'
-                    )
-                    ->addArgument(new Reference($clientServiceId))
-                    ->addArgument(new Reference(sprintf('mapado.simstring.model_transformer.%s', $databaseName)));
-                }
             }
         }
     }
@@ -91,12 +78,70 @@ class MapadoSimstringExtension extends Extension
 
                 // initialize the service
                 unset($writer['database']);
+                $clientServiceId = sprintf('mapado.simstring.%s_writerclient', $writerKey);
                 $container->register(
-                    'mapado.simstring.' . $writerKey . '_writer',
+                    $clientServiceId,
                     'Mapado\SimstringBundle\Database\SimstringWriter'
                 )
                 ->addArgument($database)
                 ->addArgument($writer);
+            }
+        }
+    }
+
+    /**
+     * loadMainServices
+     *
+     * @param array $config
+     * @param ContainerBuilder $container
+     * @access private
+     * @return void
+     */
+    private function loadMainServices(array $config, ContainerBuilder $container)
+    {
+        // Readers
+        if (!empty($config['reader'])) {
+            foreach ($config['reader'] as $readerKey => $reader) {
+                // get database name
+                $databaseName = $reader['database'];
+                $serviceId = sprintf('mapado.simstring.%s_reader', $readerKey);
+                $clientServiceId = sprintf('mapado.simstring.%s_readerclient', $readerKey);
+
+                // reader service
+                $transformerId = sprintf('mapado.simstring.model_transformer.%s', $databaseName);
+                if (!$container->has($transformerId)) {
+                    $container->setAlias($serviceId, $clientServiceId);
+                } else {
+                    // ORM mapper
+                    $container->register(
+                        $serviceId,
+                        'Mapado\SimstringBundle\Database\SimstringTransformerClient'
+                    )
+                    ->addArgument(new Reference($clientServiceId))
+                    ->addArgument(new Reference(sprintf('mapado.simstring.model_transformer.%s', $databaseName)));
+                }
+            }
+        }
+
+        if (!empty($config['writer'])) {
+            foreach ($config['writer'] as $writerKey => $writer) {
+                $databaseName = $writer['database'];
+                $serviceId = sprintf('mapado.simstring.%s_writer', $writerKey);
+                $writerServiceId = sprintf('mapado.simstring.%s_writerclient', $writerKey);
+
+                // writer service
+                $transformerId = sprintf('mapado.simstring.model_transformer.%s', $databaseName);
+                if (!$container->has($transformerId)) {
+                    $container->setAlias($serviceId, $writerServiceId);
+                } else {
+                    // ORM mapper
+                    $container->register(
+                        $serviceId,
+                        'Mapado\SimstringBundle\Database\SimstringTransformerWriter'
+                    )
+                    ->addArgument(new Reference($writerServiceId))
+                    ->addArgument(new Reference(sprintf('mapado.simstring.model_transformer.%s', $databaseName)));
+                }
             }
         }
     }
