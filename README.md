@@ -5,6 +5,10 @@ Mapado SimstringBundle : Symfony bundle for simstring record search
 
 ## Installation
 
+This extension use [Simstring](http://www.chokkan.org/software/simstring/). You can find a description of how we use it on mapado.com [on our blog](http://blog.mapado.com/fast-record-search-simstring-php-simstringbundle/).
+
+You have to install [Simsting PHP Extension](http://blog.mapado.com/fast-record-search-simstring-php-simstringbundle/#php-extension-installation) to make this bundle working.
+
 ### Get the bundle
 
 Add this in your composer.json
