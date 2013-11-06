@@ -8,6 +8,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use Mapado\SimstringBundle\Database\SimstringTransformerWriter;
+
 /**
  * ExportCommand
  * 
@@ -44,7 +46,19 @@ class WriteCommand extends ContainerAwareCommand
         $writerName = $input->getArgument('writer');
         $list = $input->getArgument('list');
 
-        $writer = $this->getContainer()->get('mapado.simstring.' . $writerName . '_writer');
+        if (!empty($list)) {
+            $writer = $this->getContainer()->get(sprintf('mapado.simstring.%s_writerclient', $writerName));
+        } else {
+            // manage empty list and mainly ORM
+            $writer = $this->getContainer()->get(sprintf('mapado.simstring.%s_writer', $writerName));
+
+            if ($writer instanceof SimstringTransformerWriter) {
+                $list = $this->getContainer()
+                            ->get(sprintf('mapado.simstring.model_transformer.%s', $writerName))
+                            ->findAll();
+            }
+        }
+       
         $writer->insert($list);
     }
 }

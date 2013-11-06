@@ -33,4 +33,12 @@ interface TransformerInterface
      * @return void
      */
     public function transform(\Iterator $objectList);
+
+    /**
+     * findAll
+     *
+     * @access public
+     * @return array
+     */
+    public function findAll();
 }

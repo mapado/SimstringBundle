@@ -57,12 +57,9 @@ class Orm implements TransformerInterface
     public function reverseTransform(\Iterator $stringList)
     {
         $objectList = [];
-        $manager = (isset($this->options['manager']) ? $this->options['manager'] : null);
-        $method = (isset($this->options['repository_method']) ? $this->options['repository_method'] : 'findBy');
 
-
-        $em = $this->persistenceService->getManager($manager);
-        $repo = $em->getRepository($this->model);
+        $repo = $this->getRepository();
+        $method = $this->getMethod();
 
         foreach ($stringList as $search) {
             $l = call_user_func([$repo, $method], [$this->field => $search]);
@@ -92,12 +89,52 @@ class Orm implements TransformerInterface
             } elseif (method_exists($object, $isMethod)) {
                 $value = $object->{$isMethod}();
             } else {
-                $value = $this->{$this->field};
+                $value = $object->{$this->field};
             }
 
             $stringList[] = $value;
         }
 
         return $stringList;
+    }
+
+    /**
+     * findAll
+     *
+     * @access public
+     * @return void
+     */
+    public function findAll()
+    {
+        $repo = $this->getRepository();
+        $method = $this->getMethod();
+
+        return call_user_func([$repo, $method], []);
+    }
+
+    /**
+     * getRepository
+     *
+     * @access private
+     * @return EntityRepository
+     */
+    private function getRepository()
+    {
+        $manager = (isset($this->options['manager']) ? $this->options['manager'] : null);
+        $entityManager = $this->persistenceService->getManager($manager);
+        $repo = $entityManager->getRepository($this->model);
+
+        return $repo;
+    }
+
+    /**
+     * getMethod
+     *
+     * @access private
+     * @return string
+     */
+    private function getMethod()
+    {
+        return (isset($this->options['repository_method']) ? $this->options['repository_method'] : 'findBy');
     }
 }
