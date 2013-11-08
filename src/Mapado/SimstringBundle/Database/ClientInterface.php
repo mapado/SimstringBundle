@@ -17,5 +17,5 @@ interface ClientInterface
      * @access public
      * @return \Iterator
      */
-    public function find($query, $threshold = null);
+    public function find($query, $threshold = null, $minThreshold = null, $gap = 0.1);
 }

@@ -60,7 +60,35 @@ class SimstringClient implements ClientInterface
      * @access public
      * @return void
      */
-    public function find($query, $threshold = null)
+    public function find($query, $threshold = null, $minThreshold = null, $gap = 0.1)
+    {
+        if ($threshold === null || $minThreshold === null) {
+            return $this->findThreshold($query, $threshold);
+        }
+
+        // treat gap error
+        $gap = abs($gap);
+        if ($gap <= 0) {
+            throw new \InvalidArgumentException('gap must be > 0');
+        }
+
+        do {
+            $searchList = $this->findThreshold($query, $threshold);
+            $threshold -= $gap;
+        } while (count($searchList) == 0 and $threshold > $minThreshold);
+
+        return (!empty($searchList) ? $searchList : []);
+    }
+
+    /**
+     * findThreshold
+     *
+     * @param string $query
+     * @param float $threshold
+     * @access private
+     * @return Simstring\Vector
+     */
+    private function findThreshold($query, $threshold)
     {
         if ($threshold !== null) {
             $this->reader->threshold = $threshold;

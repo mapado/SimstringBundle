@@ -98,6 +98,28 @@ class SimstringClient extends atoum
 
         $this->sizeOf($resultList)
             ->isEqualTo(1);
+
+        $resultList = $client->find('villrubanne', 1, 0.7);
+        $this->object($resultList)
+            ->isInstanceOf('\Iterator');
+
+        $this->sizeOf($resultList)
+            ->isEqualTo(0);
+
+        $resultList = $client->find('villrubanne', 1, 0.5, 0.1);
+        $this->object($resultList)
+            ->isInstanceOf('\Iterator');
+
+        $this->sizeOf($resultList)
+            ->isEqualTo(1);
+
+        
+        $this->exception(
+            function () use ($client) {
+                $client->find('villrubanne', 1, 0.5, 0);
+            }
+        )->isInstanceOf('\InvalidArgumentException');
+
     }
 
     /**
