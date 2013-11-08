@@ -106,11 +106,11 @@ class SimstringWriter extends atoum
      */
     public function tearDown()
     {
-        unlink(__DIR__ . '/../../Database/new-create.db');
-        unlink(__DIR__ . '/../../Database/new-create.db.4.cdb');
-        unlink(__DIR__ . '/../../Database/new-multiple.db');
-        unlink(__DIR__ . '/../../Database/new-multiple.db.4.cdb');
-        unlink(__DIR__ . '/../../Database/new-car.db');
-        unlink(__DIR__ . '/../../Database/new-car.db.4.cdb');
+        @unlink(__DIR__ . '/../../Database/new-create.db');
+        @unlink(__DIR__ . '/../../Database/new-create.db.4.cdb');
+        @unlink(__DIR__ . '/../../Database/new-multiple.db');
+        @unlink(__DIR__ . '/../../Database/new-multiple.db.4.cdb');
+        @unlink(__DIR__ . '/../../Database/new-car.db');
+        @unlink(__DIR__ . '/../../Database/new-car.db.4.cdb');
     }
 }
