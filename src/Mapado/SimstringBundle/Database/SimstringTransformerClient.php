@@ -49,7 +49,7 @@ class SimstringTransformerClient implements ClientInterface
      * @access public
      * @return Simstring\Vector
      */
-    public function find($query, $threshold = null)
+    public function find($query, $threshold = null, $minThreshold = null, $gap = 0.1)
     {
         $list = $this->client->find($query, $threshold);
         $transformedList = $this->transformer->reverseTransform($list);
