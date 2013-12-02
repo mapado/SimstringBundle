@@ -70,6 +70,7 @@ mapado_simstring:
             database: city
             measure: cosine # values are cosine/dice/jaccard/overlap/exact
             threshold: 0.7 # float between 0 and 1
+            min_results: 1 # minimim number of results if you have a lower threshold limit
         # you can add as many reader you like
 ```
 
@@ -86,6 +87,7 @@ mapado_simstring:
             database: city
             measure: cosine # values are cosine/dice/jaccard/overlap/exact (default is: exact)
             threshold: 0.7 # float between 0 and 1
+            min_results: 1 # minimim number of results if you have a lower threshold limit
         # you can add as many reader you like
 
     writer:
@@ -97,7 +99,7 @@ mapado_simstring:
 ```
 
 #### Link with Doctrine ORM
-SimstringBundle is (partially) compatible with Doctrine ORM (for now).
+SimstringBundle is compatible with Doctrine ORM.
 You only add a few database settings to get objects from your database.
 
 ```yaml

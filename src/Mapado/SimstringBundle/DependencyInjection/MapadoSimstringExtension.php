@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  */
 class MapadoSimstringExtension extends Extension
 {
-    /** 
+    /**
      * {@inheritDoc}
      */
     public function load(array $configs, ContainerBuilder $container)

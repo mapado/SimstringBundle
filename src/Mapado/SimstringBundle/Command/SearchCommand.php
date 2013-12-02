@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * ExportCommand
- * 
+ *
  * @uses ContainerAwareCommand
  * @author Julien Deniau <julien.deniau@mapado.com>
  */
@@ -29,7 +29,8 @@ class SearchCommand extends ContainerAwareCommand
             ->setDescription('Simstring search text')
             ->addArgument('reader', InputArgument::REQUIRED, 'The reader you want to search in')
             ->addArgument('query', InputArgument::REQUIRED, 'The text to search')
-            ->addOption('threshold', 't', InputOption::VALUE_REQUIRED, 'Force the threshold');
+            ->addOption('threshold', 't', InputOption::VALUE_REQUIRED, 'Force the threshold')
+            ->addOption('min_threshold', 'u', InputOption::VALUE_REQUIRED, 'Minimum threshold')
     }
 
     /**
@@ -45,12 +46,8 @@ class SearchCommand extends ContainerAwareCommand
         $query = $input->getArgument('query');
         $readerName = $input->getArgument('reader');
         $reader = $this->getContainer()->get('mapado.simstring.' . $readerName . '_reader');
-        
-        if ($input->getOption('threshold')) {
-            $resultVector = $reader->find($query, $input->getOption('threshold'));
-        } else {
-            $resultVector = $reader->find($query);
-        }
+
+        $resultVector = $reader->find($query, $input->getOption('threshold'), $input->getOption('min_threshold'));
 
         foreach ($resultVector as $line) {
             if (is_scalar($line)) {
