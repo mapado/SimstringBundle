@@ -30,7 +30,7 @@ class SearchCommand extends ContainerAwareCommand
             ->addArgument('reader', InputArgument::REQUIRED, 'The reader you want to search in')
             ->addArgument('query', InputArgument::REQUIRED, 'The text to search')
             ->addOption('threshold', 't', InputOption::VALUE_REQUIRED, 'Force the threshold')
-            ->addOption('min_threshold', 'u', InputOption::VALUE_REQUIRED, 'Minimum threshold')
+            ->addOption('min_threshold', 'u', InputOption::VALUE_REQUIRED, 'Minimum threshold');
     }
 
     /**
