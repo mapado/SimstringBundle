@@ -8,11 +8,19 @@ class SimstringClient implements ClientInterface
 {
     /**
      * reader
-     * 
+     *
      * @var \Simstring_reader
      * @access private
      */
     private $reader;
+
+    /**
+     * minResults
+     *
+     * @var int
+     * @access private
+     */
+    private $minResults;
 
     /**
      * __construct
@@ -51,6 +59,12 @@ class SimstringClient implements ClientInterface
         if (isset($config['threshold'])) {
             $this->reader->threshold = $config['threshold'];
         }
+
+        if (isset($config['min_results'])) {
+            $this->minResults = $config['min_results'];
+        } else {
+            $this->minResults = 1;
+        }
     }
 
     /**
@@ -75,7 +89,7 @@ class SimstringClient implements ClientInterface
         do {
             $searchList = $this->findThreshold($query, $threshold);
             $threshold -= $gap;
-        } while (count($searchList) == 0 and $threshold > $minThreshold);
+        } while (count($searchList) < $this->minResults && $threshold > $minThreshold);
 
         return (!empty($searchList) ? $searchList : []);
     }

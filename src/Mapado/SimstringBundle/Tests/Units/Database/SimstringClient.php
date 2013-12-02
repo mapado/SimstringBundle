@@ -7,9 +7,9 @@ use Mapado\SimstringBundle\Database;
 
 /**
  * SimstringClient
- * 
+ *
  * @uses atoum
- * @author Julien Deniau <julien.deniau@mapado.com> 
+ * @author Julien Deniau <julien.deniau@mapado.com>
  */
 class SimstringClient extends atoum
 {
@@ -113,7 +113,17 @@ class SimstringClient extends atoum
         $this->sizeOf($resultList)
             ->isEqualTo(1);
 
-        
+        // test min results
+        $config['min_results'] = 3;
+        $client = $this->getWorkingClient($config);
+        $resultList = $client->find('villrubanne', 1, 0.2, 0.1);
+        $this->object($resultList)
+            ->isInstanceOf('\Iterator');
+
+        $this->sizeOf($resultList)
+            ->isGreaterThan(1);
+
+
         $this->exception(
             function () use ($client) {
                 $client->find('villrubanne', 1, 0.5, 0);
