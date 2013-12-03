@@ -2,27 +2,29 @@
 
 namespace Mapado\SimstringBundle\DataTransformer;
 
+use Mapado\SimstringBundle\Model\SimstringResult;
+
 class Orm implements TransformerInterface
 {
     /**
      * persistenceService
-     * 
+     *
      * @var mixed
      * @access private
      */
     private $persistenceService;
-    
+
     /**
      * model
-     * 
+     *
      * @var string
      * @access private
      */
     private $model;
-    
+
     /**
      * field
-     * 
+     *
      * @var string
      * @access private
      */
@@ -30,7 +32,7 @@ class Orm implements TransformerInterface
 
     /**
      * options
-     * 
+     *
      * @var array
      * @access private
      */
@@ -62,8 +64,13 @@ class Orm implements TransformerInterface
         $method = $this->getMethod();
 
         foreach ($stringList as $search) {
-            $l = call_user_func([$repo, $method], [$this->field => $search]);
-            $objectList = array_merge($objectList, $l);
+            $searchText = $search->getValue();
+
+            $l = call_user_func([$repo, $method], [$this->field => $searchText]);
+
+            foreach ($l as $result) {
+                $objectList[] = new SimstringResult($result, $search->getThreshold());
+            }
         }
 
         return $objectList;

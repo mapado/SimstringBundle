@@ -65,53 +65,30 @@ class SimstringClient extends atoum
         $client = $this->getWorkingClient();
 
         $resultList = $client->find('paris');
-        $this->object($resultList)
-            ->isInstanceOf('\Iterator');
 
-        $this->sizeOf($resultList)
-            ->isEqualTo(1);
+        $this->validateResult($resultList, 1);
 
         $config = [
             'measure' => 'cosine',
-            'threshold' => 0.7,
+            'threshold' => 0.7
         ];
         $client = $this->getWorkingClient($config);
 
         $resultList = $client->find('villeneuve');
-        $this->object($resultList)
-            ->isInstanceOf('\Iterator');
-
-        $this->sizeOf($resultList)
-            ->isEqualTo(3);
+        $this->validateResult($resultList, 2);
 
         // change threshold
         $resultList = $client->find('villrubanne');
-        $this->object($resultList)
-            ->isInstanceOf('\Iterator');
-
-        $this->sizeOf($resultList)
-            ->isEqualTo(0);
+        $this->validateResult($resultList, 0);
 
         $resultList = $client->find('villrubanne', 0.5);
-        $this->object($resultList)
-            ->isInstanceOf('\Iterator');
-
-        $this->sizeOf($resultList)
-            ->isEqualTo(1);
+        $this->validateResult($resultList, 1);
 
         $resultList = $client->find('villrubanne', 1, 0.7);
-        $this->object($resultList)
-            ->isInstanceOf('\Iterator');
-
-        $this->sizeOf($resultList)
-            ->isEqualTo(0);
+        $this->validateResult($resultList, 0);
 
         $resultList = $client->find('villrubanne', 1, 0.5, 0.1);
-        $this->object($resultList)
-            ->isInstanceOf('\Iterator');
-
-        $this->sizeOf($resultList)
-            ->isEqualTo(1);
+        $this->validateResult($resultList, 1);
 
         // test min results
         $config['min_results'] = 3;
@@ -130,6 +107,30 @@ class SimstringClient extends atoum
             }
         )->isInstanceOf('\InvalidArgumentException');
 
+    }
+
+    /**
+     * validateResult
+     *
+     * @param \Iterator $resultList
+     * @param int $nb
+     * @access private
+     * @return void
+     */
+    private function validateResult($resultList, $nbResults)
+    {
+        $this->object($resultList)
+            ->isInstanceOf('\Iterator');
+
+        $this->sizeOf($resultList)
+            ->isEqualTo($nbResults);
+
+        if ($nbResults > 0) {
+            $this->object($resultList->current())
+                ->isInstanceOf(
+                    'Mapado\SimstringBundle\Model\SimstringResult'
+                );
+        }
     }
 
     /**

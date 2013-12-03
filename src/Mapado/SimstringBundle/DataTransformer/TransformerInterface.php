@@ -19,9 +19,9 @@ interface TransformerInterface
     /**
      * reverseTransform
      *
-     * @param \Iterator $stringList
+     * @param \Iterator<SimstringResult> $stringList
      * @access public
-     * @return \Iterator Object list
+     * @return \Iterator<SimstringResult> Object list
      */
     public function reverseTransform(\Iterator $stringList);
 

@@ -6,14 +6,14 @@ use Mapado\SimstringBundle\DataTransformer;
 
 /**
  * SimstringTransformerClient
- * 
+ *
  * @author Julien Deniau <julien.deniau@mapado.com>
  */
 class SimstringTransformerClient implements ClientInterface
 {
     /**
      * client
-     * 
+     *
      * @var SimstringClient
      * @access private
      */
@@ -21,7 +21,7 @@ class SimstringTransformerClient implements ClientInterface
 
     /**
      * transformer
-     * 
+     *
      * @var DataTransformer\TransformerInterface
      * @access private
      */
@@ -47,7 +47,7 @@ class SimstringTransformerClient implements ClientInterface
      * @param string $query
      * @param float $threshold
      * @access public
-     * @return Simstring\Vector
+     * @return \Iterator<SimstringResult>
      */
     public function find($query, $threshold = null, $minThreshold = null, $gap = 0.1)
     {

@@ -49,7 +49,8 @@ class SearchCommand extends ContainerAwareCommand
 
         $resultVector = $reader->find($query, $input->getOption('threshold'), $input->getOption('min_threshold'));
 
-        foreach ($resultVector as $line) {
+        foreach ($resultVector as $result) {
+            $line = $result->getValue();
             if (is_scalar($line)) {
                 $output->writeln($line);
             } else {

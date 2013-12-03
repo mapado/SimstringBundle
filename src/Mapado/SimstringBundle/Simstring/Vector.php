@@ -2,19 +2,21 @@
 
 namespace Mapado\SimstringBundle\Simstring;
 
+use Mapado\SimstringBundle\Model\SimstringResult;
+
 class Vector implements \Iterator, \Countable
 {
     /**
-     * vector
-     * 
-     * @var \Simstring_StringVector
+     * itemList
+     *
+     * @var array
      * @access private
      */
-    private $vector;
+    private $itemList;
 
     /**
      * position
-     * 
+     *
      * @var int
      * @access private
      */
@@ -23,14 +25,24 @@ class Vector implements \Iterator, \Countable
     /**
      * __construct
      *
-     * @param \Simstring_StringVector $vector
      * @access public
      * @return void
      */
-    public function __construct(\Simstring_StringVector $vector)
+    public function __construct()
     {
-        $this->vector = $vector;
+        $this->itemList = [];
         $this->position = 0;
+    }
+
+    /**
+     * getIterator
+     *
+     * @access public
+     * @return \ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->itemList);
     }
 
     /**
@@ -38,14 +50,7 @@ class Vector implements \Iterator, \Countable
      */
     public function current ()
     {
-        $value = $this->vector->get($this->position);
-        if (substr($value, 0, 1) === '"') {
-            $value = substr($value, 1);
-        }
-        if (substr($value, -1) === '"') {
-            $value = substr($value, 0, -1);
-        }
-        return $value;
+        return $this->itemList[$this->position];
     }
 
     /**
@@ -77,7 +82,7 @@ class Vector implements \Iterator, \Countable
      */
     public function valid ()
     {
-        return $this->vector->size() > $this->position;
+        return isset($this->itemList[$this->position]);
     }
 
     /**
@@ -85,6 +90,51 @@ class Vector implements \Iterator, \Countable
      */
     public function count()
     {
-        return $this->vector->size();
+        return count($this->itemList);
+    }
+
+    /**
+     * mergeVector
+     *
+     * @param \Simstring_StringVector $vector
+     * @param float $threshold
+     * @access public
+     * @return Vector
+     */
+    public function mergeVector(\Simstring_StringVector $vector, $threshold)
+    {
+        while (!$vector->is_empty()) {
+            $value = $vector->pop();
+            if (substr($value, 0, 1) === '"') {
+                $value = substr($value, 1);
+            }
+            if (substr($value, -1) === '"') {
+                $value = substr($value, 0, -1);
+            }
+
+            if (!$this->inItemList($value)) {
+                $this->itemList[] = new SimstringResult($value, $threshold);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * inItemList
+     *
+     * @param mixed $value
+     * @access private
+     * @return bool
+     */
+    private function inItemList($value)
+    {
+        foreach ($this->itemList as $item) {
+            if ($item->getValue() == $value) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -4,8 +4,8 @@ namespace Mapado\SimstringBundle\Database;
 
 /**
  * ClientInterface
- * 
- * @author Julien Deniau <julien.deniau@mapado.com> 
+ *
+ * @author Julien Deniau <julien.deniau@mapado.com>
  */
 interface ClientInterface
 {
@@ -15,7 +15,7 @@ interface ClientInterface
      * @param string $query
      * @param float $threshold
      * @access public
-     * @return \Iterator
+     * @return \Iterator<SimstringResult>
      */
     public function find($query, $threshold = null, $minThreshold = null, $gap = 0.1);
 }

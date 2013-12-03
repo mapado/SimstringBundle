@@ -137,10 +137,10 @@ php app/console mapado:simstring:insert city chicago houson boston montréal
 #### Controller
 ```php
 // Perform the query
-$textList = $this->get('mapado.simstring.city_reader')->find('New Yrok');
+$resultList = $this->get('mapado.simstring.city_reader')->find('New Yrok');
 
 // Dynamically change the threshold
-$textList = $this->get('mapado.simstring.city_reader')->find('New Yrok', 0.3);
+$resultList = $this->get('mapado.simstring.city_reader')->find('New Yrok', 0.3);
 ```
 
-```$textList``` will be an iterator of string or of Entity if you used the ORM mapper.
+```$resultList``` will be an iterator of ```SimstringResult``` having a string (or an Entity if you used the ORM mapper) as value.

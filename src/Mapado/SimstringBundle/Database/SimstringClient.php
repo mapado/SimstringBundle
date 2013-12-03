@@ -3,6 +3,7 @@
 namespace Mapado\SimstringBundle\Database;
 
 use Mapado\SimstringBundle\Simstring;
+use Mapado\SimstringBundle\Model\SimstringResult;
 
 class SimstringClient implements ClientInterface
 {
@@ -72,12 +73,13 @@ class SimstringClient implements ClientInterface
      *
      * @param string $query
      * @access public
-     * @return void
+     * @return \Iterator<SimstringResult>
      */
     public function find($query, $threshold = null, $minThreshold = null, $gap = 0.1)
     {
+        $searchList = new Simstring\Vector();
         if ($threshold === null || $minThreshold === null) {
-            return $this->findThreshold($query, $threshold);
+            return $this->findThreshold($searchList, $query, $threshold);
         }
 
         // treat gap error
@@ -87,28 +89,34 @@ class SimstringClient implements ClientInterface
         }
 
         do {
-            $searchList = $this->findThreshold($query, $threshold);
+            $searchList = $this->findThreshold($searchList, $query, $threshold);
             $threshold -= $gap;
         } while (count($searchList) < $this->minResults && $threshold > $minThreshold);
 
-        return (!empty($searchList) ? $searchList : []);
+        return $searchList;
     }
 
     /**
      * findThreshold
      *
+     * @param Simstring\Vector $searchList
      * @param string $query
      * @param float $threshold
      * @access private
      * @return Simstring\Vector
      */
-    private function findThreshold($query, $threshold)
-    {
+    private function findThreshold(
+        Simstring\Vector $searchList,
+        $query,
+        $threshold
+    ) {
         if ($threshold !== null) {
             $this->reader->threshold = $threshold;
         }
-        $vector = new Simstring\Vector($this->reader->retrieve($query));
-        return $vector;
+
+        $searchList->mergeVector($this->reader->retrieve($query), $threshold);
+
+        return $searchList;
     }
 
     /**
