@@ -16,7 +16,7 @@ Add this in your composer.json
 ```json
 {
 	"require": {
-		"mapado/simstring-bundle": "dev-master@dev"
+		"mapado/simstring-bundle": "1.*"
 	}
 }
 ```
