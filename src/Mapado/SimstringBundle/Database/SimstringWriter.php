@@ -1,13 +1,11 @@
 <?php
 namespace Mapado\SimstringBundle\Database;
 
-use Mapado\SimstringBundle\Simstring;
- 
 class SimstringWriter implements WriterInterface
 {
     /**
      * writer
-     * 
+     *
      * @var \Simstring_writer
      * @access private
      */

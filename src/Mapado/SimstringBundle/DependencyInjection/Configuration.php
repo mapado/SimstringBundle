@@ -17,7 +17,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('mapado_simstring')
+        $treeBuilder->root('mapado_simstring')
             ->addDefaultsIfNotSet()
             ->children()
                 ->arrayNode('databases')

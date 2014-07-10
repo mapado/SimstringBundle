@@ -5,14 +5,13 @@ namespace Mapado\SimstringBundle\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Mapado\SimstringBundle\Database\SimstringTransformerWriter;
 
 /**
  * ExportCommand
- * 
+ *
  * @uses ContainerAwareCommand
  * @author Julien Deniau <julien.deniau@mapado.com>
  */
@@ -58,7 +57,7 @@ class WriteCommand extends ContainerAwareCommand
                             ->findAll();
             }
         }
-       
+
         $writer->insert($list);
     }
 }

@@ -3,7 +3,6 @@
 namespace Mapado\SimstringBundle\Database;
 
 use Mapado\SimstringBundle\Simstring;
-use Mapado\SimstringBundle\Model\SimstringResult;
 
 class SimstringClient implements ClientInterface
 {
@@ -73,7 +72,7 @@ class SimstringClient implements ClientInterface
      *
      * @param string $query
      * @access public
-     * @return \Iterator<SimstringResult>
+     * @return \Iterator<\Mapado\SimstringBundle\Model\SimstringResult>
      */
     public function find($query, $threshold = null, $minThreshold = null, $gap = 0.1)
     {
