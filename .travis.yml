@@ -4,7 +4,8 @@ php:
     - 5.5
 
 before_script:
-    - wget http://getcomposer.org/composer.phar
-    - php composer.phar install --dev
+    - ./travis.sh
+    - chmod 777 src/Mapado/SimstringBundle/Tests/Database/
+    - composer install --dev
 
-script: bin/atoum -d src/Mapado/SimstringBundle/Tests/Units/ -bf vendor/autoload.php
+script: bin/atoum -f src/Mapado/SimstringBundle/Tests/Units/Database/SimstringClient.php -bf vendor/autoload.php
