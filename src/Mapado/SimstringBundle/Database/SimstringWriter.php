@@ -64,7 +64,7 @@ class SimstringWriter implements WriterInterface
      */
     private function insertOne($line)
     {
-        $this->writer->insert(strtolower($line));
+        $this->writer->insert($line);
         return $this;
     }
 

@@ -76,8 +76,6 @@ class SimstringClient implements ClientInterface
      */
     public function find($query, $threshold = null, $minThreshold = null, $gap = 0.1)
     {
-        $query = strtolower($query);
-
         $searchList = new Simstring\Vector();
         if ($threshold === null || $minThreshold === null) {
             return $this->findThreshold($searchList, $query, $threshold);
