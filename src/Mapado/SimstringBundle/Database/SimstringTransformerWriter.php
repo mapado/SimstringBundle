@@ -7,7 +7,7 @@ class SimstringTransformerWriter implements WriterInterface
 {
     /**
      * writer
-     * 
+     *
      * @var SimstringWriter
      * @access private
      */
@@ -15,7 +15,7 @@ class SimstringTransformerWriter implements WriterInterface
 
     /**
      * transformer
-     * 
+     *
      * @var DataTransformer\TransformerInterface
      * @access private
      */
